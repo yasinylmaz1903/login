@@ -1,0 +1,8 @@
+name = "login-api"
+compatibility_date = "2025-12-26"
+pages_build_output_dir = "."
+
+[[kv_namespaces]]
+binding = "USERS"
+id = "preview_id"
+preview_id = "preview_id"
