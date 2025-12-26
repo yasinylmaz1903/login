@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Site Bilgisi</title>
+  <link rel="stylesheet" href="site-info.css" />
+  <style>
+    html, body {
+      overflow: hidden !important;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .site-info-popover {
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      max-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .site-info-popover::-webkit-scrollbar {
+      width: 6px;
+    }
+    .site-info-popover::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .site-info-popover::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
+    .site-info-popover::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="site-info-popover" id="site-info">
+    <div class="site-info-header">
+      <div class="site-info-host" id="site-info-host">Site</div>
+    </div>
+
+    <button class="site-info-row" id="site-info-conn" type="button">
+      <span class="site-info-icon" id="site-info-conn-icon">🔒</span>
+      <span class="site-info-row-text">
+        <span class="site-info-row-title" id="site-info-conn-title">Bağlantı</span>
+        <span class="site-info-row-sub" id="site-info-conn-sub"></span>
+      </span>
+    </button>
+
+    <button class="site-info-row" id="site-info-cookies" type="button">
+      <span class="site-info-icon">🍪</span>
+      <span class="site-info-row-text">
+        <span class="site-info-row-title">Çerezler ve site verileri</span>
+        <span class="site-info-row-sub" id="site-info-cookies-sub"></span>
+      </span>
+    </button>
+
+    <div class="site-info-section">İzinler</div>
+    <div class="site-info-perms" id="site-info-perms"></div>
+
+    <div class="site-info-footer">
+      <button class="site-info-link" id="site-info-settings" type="button">Site ayarları</button>
+    </div>
+  </div>
+
+  <script src="standalone-site-info.js"></script>
+</body>
+</html>

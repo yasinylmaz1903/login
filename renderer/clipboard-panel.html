@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pano Yönetimi</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --bg2: #0b0d10;
+      --bg3: #16181d;
+      --text: #e6ecff;
+      --muted: #aab3c5;
+      --border: #2a3340;
+      --btn: #1f2630;
+      --btnHover: #2a3340;
+      --accent: #2f89ff;
+      --danger: #e74c3c;
+      --success: #2ecc71;
+      --warning: #f39c12;
+      --purple: #9b59b6;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 10px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      -webkit-app-region: drag;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .left, .right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      -webkit-app-region: no-drag;
+    }
+
+    .title {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--btn);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      line-height: 1;
+      transition: all 0.15s;
+    }
+    .btn:hover { background: var(--btnHover); }
+    .btn.danger { color: var(--danger); }
+    .btn.danger:hover { background: var(--danger); color: white; }
+
+    .search-box {
+      flex: 1;
+      max-width: 300px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 6px 32px 6px 10px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 12px;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--accent);
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0;
+      line-height: 1;
+      display: none;
+    }
+    .search-clear:hover { color: var(--text); }
+
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 6px;
+      padding: 8px 10px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+
+    .filter-btn {
+      padding: 5px 10px;
+      border: 1px solid var(--border);
+      background: var(--btn);
+      color: var(--muted);
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover { background: var(--btnHover); }
+    .filter-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .clip-item {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      position: relative;
+    }
+    .clip-item:hover {
+      border-color: var(--accent);
+      background: var(--bg2);
+    }
+
+    .clip-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .clip-type {
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .clip-type.url { background: var(--accent); color: white; }
+    .clip-type.code { background: var(--purple); color: white; }
+    .clip-type.email { background: var(--warning); color: white; }
+    .clip-type.otp { background: var(--success); color: white; }
+    .clip-type.text { background: var(--muted); color: white; }
+
+    .clip-source {
+      font-size: 11px;
+      color: var(--muted);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .clip-time {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .clip-text {
+      font-size: 12px;
+      color: var(--text);
+      word-break: break-word;
+      line-height: 1.4;
+      max-height: 60px;
+      overflow: hidden;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+
+    .clip-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    .clip-action-btn {
+      padding: 4px 8px;
+      font-size: 11px;
+      background: var(--btn);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .clip-action-btn:hover {
+      background: var(--btnHover);
+      color: var(--text);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      opacity: 0.3;
+    }
+
+    .stats-bar {
+      padding: 8px 10px;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg2);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--btnHover);
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="left">
+      <span class="title">📋 Pano Yönetimi</span>
+    </div>
+    <div class="right">
+      <div class="search-box">
+        <input type="text" class="search-input" id="search-input" placeholder="Ara..." autocomplete="off" />
+        <button class="search-clear" id="search-clear">✕</button>
+      </div>
+      <button id="btn-clear" class="btn danger" title="Tümünü Temizle">Temizle</button>
+      <button id="btn-hide" class="btn" title="Gizle">Gizle</button>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">Tümü</button>
+    <button class="filter-btn" data-filter="url">URL</button>
+    <button class="filter-btn" data-filter="code">Kod</button>
+    <button class="filter-btn" data-filter="email">E-posta</button>
+    <button class="filter-btn" data-filter="otp">OTP</button>
+    <button class="filter-btn" data-filter="text">Metin</button>
+  </div>
+
+  <div class="content" id="content">
+    <div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <div>Henüz kopyalanan içerik yok</div>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <span id="stats-count">0 öğe</span>
+    <span id="stats-memory">0 KB</span>
+  </div>
+
+  <script src="clipboard-panel.js"></script>
+</body>
+</html>

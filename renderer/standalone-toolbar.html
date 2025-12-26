@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Toolbar</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100%;
+      height: 82px;
+      background: transparent;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+    .titlebar {
+      width: 100%;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(180deg, #161b22 0%, #0d1117 100%);
+      -webkit-app-region: drag;
+      padding: 0 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      gap: 10px;
+    }
+    .titlebar-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      border-radius: 2px;
+      -webkit-app-region: no-drag;
+    }
+    .titlebar-spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+    .titlebar-title {
+      flex: 1;
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .window-controls {
+      display: flex;
+      gap: 0;
+      -webkit-app-region: no-drag;
+    }
+    .window-controls button {
+      width: 52px;
+      height: 36px;
+      border: none;
+      background: transparent;
+      color: rgba(255,255,255,0.8);
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .window-controls button:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    .window-controls button.close:hover {
+      background: #e81123;
+      color: white;
+    }
+    .toolbar {
+      width: 100%;
+      height: 46px;
+      padding: 6px 10px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      background: linear-gradient(180deg, #0d1117 0%, #0a0d12 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex: 1;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="titlebar">
+    <img id="titlebar-favicon" class="titlebar-icon" src="" style="display:none;" />
+    <div id="titlebar-spinner" class="titlebar-spinner" style="display:none;"></div>
+    <div class="titlebar-title" id="titlebar-title">Yükleniyor...</div>
+    <div class="window-controls">
+      <button id="window-minimize" title="Simge Durumuna Küçült">─</button>
+      <button id="window-maximize" title="Ekranı Kapla">□</button>
+      <button id="window-close" class="close" title="Kapat">✕</button>
+    </div>
+  </div>
+  <div class="toolbar">
+    <button id="back" title="Geri">&lt;</button>
+    <button id="forward" title="İleri">&gt;</button>
+    <button id="reload" title="Yenile" aria-label="Yenile">⟳</button>
+    <div class="url-box">
+      <span class="ssl" id="ssl" title="SSL durumu">?</span>
+      <input id="url" type="text" placeholder="Adres girin..." />
+      <button id="zoom" class="zoom-button" type="button" title="Yakınlaştır / Uzaklaştır (Ctrl + Tekerlek)">
+        <span class="zoom-icon" aria-hidden="true">🔍</span>
+        <span class="zoom-value" id="zoom-value">100%</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const urlInput = document.getElementById('url');
+    const backBtn = document.getElementById('back');
+    const fwdBtn = document.getElementById('forward');
+    const reloadBtn = document.getElementById('reload');
+    const sslBadge = document.getElementById('ssl');
+    const faviconImg = document.getElementById('titlebar-favicon');
+    const loadingSpinner = document.getElementById('titlebar-spinner');
+    const zoomBtn = document.getElementById('zoom');
+    const zoomValue = document.getElementById('zoom-value');
+    const titlebarTitle = document.getElementById('titlebar-title');
+    const windowMinimizeBtn = document.getElementById('window-minimize');
+    const windowMaximizeBtn = document.getElementById('window-maximize');
+    const windowCloseBtn = document.getElementById('window-close');
+    
+    // Window control butonları
+    windowMinimizeBtn.onclick = () => window.browserAPI.standaloneWindowMinimize?.();
+    windowMaximizeBtn.onclick = () => window.browserAPI.standaloneWindowMaximize?.();
+    windowCloseBtn.onclick = () => window.browserAPI.standaloneWindowClose?.();
+    
+    let isLoading = false;
+    let currentFavicon = null;
+    
+    function showLoading(show) {
+      isLoading = show;
+      loadingSpinner.style.display = show ? 'block' : 'none';
+      if (show) {
+        faviconImg.style.display = 'none';
+      } else {
+        updateIconDisplay();
+      }
+    }
+    
+    function updateIconDisplay() {
+      if (isLoading) return;
+      
+      if (currentFavicon) {
+        faviconImg.style.display = 'block';
+      } else {
+        faviconImg.style.display = 'none';
+      }
+    }
+    
+    function updateFavicon(url) {
+      if (!url || url.startsWith('file://')) {
+        currentFavicon = null;
+        faviconImg.src = '';
+        faviconImg.style.display = 'none';
+        updateIconDisplay();
+        return;
+      }
+      
+      try {
+        const u = new URL(url);
+        const faviconUrl = `https://www.google.com/s2/favicons?domain=${u.hostname}&sz=32`;
+        currentFavicon = faviconUrl;
+        faviconImg.src = faviconUrl;
+        faviconImg.onerror = () => {
+          currentFavicon = null;
+          updateIconDisplay();
+        };
+        faviconImg.onload = () => {
+          updateIconDisplay();
+        };
+      } catch (_err) {
+        currentFavicon = null;
+        faviconImg.src = '';
+        updateIconDisplay();
+      }
+    }
+    
+    function updateSSL(url) {
+      let cls = 'mixed';
+      let label = '?';
+      if (url?.startsWith('https://')) {
+        cls = 'secure';
+        label = '🔒';
+      } else if (url?.startsWith('http://')) {
+        cls = 'insecure';
+        label = '!';
+      } else if (url?.startsWith('file://')) {
+        cls = 'secure';
+        label = '📄';
+      }
+      sslBadge.className = `ssl ${cls}`;
+      sslBadge.textContent = label;
+      sslBadge.title = cls === 'secure' ? 'Güvenli bağlantı (HTTPS)' : cls === 'insecure' ? 'Güvenli değil (HTTP)' : 'Karışık / bilinmiyor';
+    }
+    
+    function updateZoom(factor) {
+      const percent = Math.round(factor * 100);
+      zoomValue.textContent = `${percent}%`;
+    }
+    
+    // SSL badge ve titlebar favicon'a tıklama
+    const openSiteInfo = (e) => {
+      e.stopPropagation();
+      const rect = e.target.getBoundingClientRect();
+      window.browserAPI.openStandaloneSiteInfo?.({ rect: { left: rect.left, bottom: rect.bottom } });
+    };
+    
+    sslBadge.style.cursor = 'pointer';
+    sslBadge.onclick = openSiteInfo;
+    faviconImg.style.cursor = 'pointer';
+    faviconImg.onclick = openSiteInfo;
+    
+    window.browserAPI.onNavigate((url) => {
+      // Error sayfası için validated parametresini kontrol et
+      if (url && url.includes('/error.html?')) {
+        try {
+          const params = new URLSearchParams(url.split('?')[1]);
+          const validated = params.get('validated') || params.get('url');
+          if (validated) {
+            urlInput.value = validated;
+            updateSSL(validated);
+            updateFavicon(validated);
+            return;
+          }
+        } catch (_err) {}
+      }
+      
+      // Home sayfası için boş göster
+      if (url && url.includes('/home.html')) {
+        urlInput.value = '';
+        updateSSL('');
+        updateFavicon('');
+        return;
+      }
+      
+      // Normal sayfa
+      urlInput.value = url;
+      updateSSL(url);
+      updateFavicon(url);
+    });
+    
+    window.browserAPI.onNavState((state) => {
+      backBtn.disabled = !state.canGoBack;
+      fwdBtn.disabled = !state.canGoForward;
+    });
+    
+    window.browserAPI.onStandaloneZoomUpdate?.((factor) => {
+      updateZoom(factor);
+    });
+    
+    window.browserAPI.onStandaloneLoadStart?.(() => {
+      showLoading(true);
+    });
+    
+    window.browserAPI.onStandaloneLoadStop?.(() => {
+      showLoading(false);
+    });
+    
+    window.browserAPI.onStandaloneTitleUpdate?.((title) => {
+      titlebarTitle.textContent = title || 'Yeni Pencere';
+    });
+    
+    backBtn.onclick = () => window.browserAPI.goBack();
+    fwdBtn.onclick = () => window.browserAPI.goForward();
+    reloadBtn.onclick = () => window.browserAPI.standaloneReload();
+    
+    urlInput.onkeydown = (e) => {
+      if (e.key === 'Enter') {
+        window.browserAPI.loadURL(urlInput.value);
+      }
+    };
+    
+    // Zoom butonu tıklandığında zoom menüsü aç
+    zoomBtn.onclick = (e) => {
+      const rect = zoomBtn.getBoundingClientRect();
+      window.browserAPI.openStandaloneZoomMenu?.({ rect: { left: rect.left, bottom: rect.bottom } });
+    };
+    
+    // İlk yükleme
+    if (urlInput.value) {
+      updateSSL(urlInput.value);
+      updateFavicon(urlInput.value);
+    }
+  </script>
+</body>
+</html>

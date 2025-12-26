@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zoom</title>
+  <link rel="stylesheet" href="site-info.css" />
+</head>
+<body>
+  <div class="site-info-popover" id="zoom-menu">
+    <div class="site-info-header">
+      <div class="site-info-host" id="zoom-title">Yakınlaştırma</div>
+      <button class="site-info-close" id="zoom-close" aria-label="Kapat">✕</button>
+    </div>
+
+    <button class="site-info-row" id="zoom-in" type="button">
+      <span class="site-info-icon">➕</span>
+      <span class="site-info-row-text">
+        <span class="site-info-row-title">Yakınlaştır</span>
+        <span class="site-info-row-sub">Ctrl + Teker / Ctrl + +</span>
+      </span>
+    </button>
+
+    <button class="site-info-row" id="zoom-out" type="button">
+      <span class="site-info-icon">➖</span>
+      <span class="site-info-row-text">
+        <span class="site-info-row-title">Uzaklaştır</span>
+        <span class="site-info-row-sub">Ctrl + Teker / Ctrl + -</span>
+      </span>
+    </button>
+
+    <button class="site-info-row" id="zoom-reset" type="button">
+      <span class="site-info-icon">↺</span>
+      <span class="site-info-row-text">
+        <span class="site-info-row-title">Sıfırla</span>
+        <span class="site-info-row-sub">100% (Ctrl + 0)</span>
+      </span>
+    </button>
+  </div>
+
+  <script src="zoom-menu.js"></script>
+</body>
+</html>

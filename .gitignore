@@ -1,6 +1,5 @@
-# Dependencies
+# Dependencies (only root, include functions/node_modules)
 node_modules/
-functions/node_modules/
 
 # Build outputs
 dist/

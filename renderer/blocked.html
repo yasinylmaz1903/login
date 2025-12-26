@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="../resources/icons/ogame.png" />
+  <title>Erişim Engellendi</title>
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(93, 151, 255, 0.16), transparent 30%),
+        radial-gradient(circle at 82% 8%, rgba(255, 116, 116, 0.12), transparent 28%),
+        radial-gradient(circle at 50% 78%, rgba(93, 255, 203, 0.12), transparent 34%),
+        #080b12;
+      color: #e7eaf0;
+      overflow: hidden;
+      -webkit-app-region: drag;
+    }
+
+    .shell {
+      width: min(520px, calc(100vw - 28px));
+      padding: 18px;
+      -webkit-app-region: no-drag;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
+      padding: 26px;
+      background: linear-gradient(145deg, rgba(25, 30, 42, 0.95), rgba(16, 19, 28, 0.98));
+      border: 1px solid rgba(47, 137, 255, 0.12);
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(47, 137, 255, 0.05);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(47, 137, 255, 0.04), transparent);
+      pointer-events: none;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 0 10px;
+      position: relative;
+      z-index: 1;
+      gap: 12px;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      margin: 0;
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 8px;
+      -webkit-app-region: no-drag;
+    }
+
+    .control-btn {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: rgba(47, 137, 255, 0.08);
+      color: #9aa6bb;
+      cursor: pointer;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 120ms ease, color 120ms ease;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    .control-btn:hover {
+      background: rgba(47, 137, 255, 0.2);
+      color: #e7eaf0;
+    }
+
+    .control-btn.close:hover {
+      background: #e81123;
+      color: white;
+    }
+
+    .control-btn svg {
+      width: 10px;
+      height: 10px;
+      fill: currentColor;
+    }
+
+    .desc {
+      margin: 0 0 18px;
+      font-size: 13px;
+      color: #9aa6bb;
+      line-height: 1.55;
+      position: relative;
+      z-index: 1;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #1f2630, #191e28);
+      color: #e7eaf0;
+      border: 1px solid #2a3340;
+      border-radius: 12px;
+      padding: 11px 16px;
+      cursor: pointer;
+      transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+      font-weight: 600;
+      font-size: 13px;
+      text-decoration: none;
+      min-width: 140px;
+      text-align: center;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(47, 137, 255, 0.35);
+      background: linear-gradient(135deg, #2a3340, #1f2630);
+    }
+
+    .hint {
+      margin-top: 12px;
+      font-size: 11px;
+      color: rgba(154, 166, 187, 0.85);
+      line-height: 1.45;
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="card">
+      <div class="title-row">
+        <h1 class="title">Güncelleme Mevcut</h1>
+        <div class="window-controls">
+          <button class="control-btn minimize" id="window-minimize" title="Küçült">
+            <svg viewBox="0 0 10 1"><path d="M 0,0.5 L 10,0.5" stroke="currentColor" stroke-width="1"/></svg>
+          </button>
+          <button class="control-btn close" id="window-close" title="Kapat">
+            <svg viewBox="0 0 10 10"><path d="M 0,0 L 10,10 M 10,0 L 0,10" stroke="currentColor" stroke-width="1.2"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <p class="desc">Film/Dizi Uygulamamızın güncellemesi mevcuttur web sitemizden güncel uygulmayı indirebilirsiniz.</p>
+
+      
+
+      <div class="hint">Not: İnatTV Premium sürümü telegram hesabımızdan talep etmeniz gerekmektedir. </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('window-minimize').onclick = () => {
+      window.browserAPI.loginWindowMinimize();
+    };
+    document.getElementById('window-close').onclick = () => {
+      window.browserAPI.loginWindowClose();
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const download = params.get('download') || '';
+    const link = document.getElementById('download-link');
+    if (link) {
+      if (download) {
+        try {
+          link.href = decodeURIComponent(download);
+        } catch (_err) {
+          link.href = download;
+        }
+      } else {
+        link.href = 'https://lobby.ogame.gameforge.com/tr_TR/';
+      }
+    }
+  </script>
+</body>
+</html>

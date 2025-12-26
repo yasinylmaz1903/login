@@ -1,0 +1,1404 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ayarlar</title>
+  
+  <style>
+      :root {
+        color-scheme: dark;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: radial-gradient(circle at 18% 12%, rgba(93, 151, 255, 0.16), transparent 30%),
+          radial-gradient(circle at 82% 8%, rgba(255, 116, 116, 0.12), transparent 28%),
+          radial-gradient(circle at 50% 78%, rgba(93, 255, 203, 0.12), transparent 34%),
+          #080b12;
+        color: #e7eaf0;
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(6px);
+      }
+      .sidebar {
+        background: linear-gradient(180deg, rgba(16, 20, 30, 0.92), rgba(10, 13, 19, 0.96));
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 18px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        box-shadow: 8px 0 30px rgba(0, 0, 0, 0.42);
+      }
+      .sidebar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 8px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(34, 42, 60, 0.9), rgba(20, 25, 35, 0.95));
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 20px rgba(0, 0, 0, 0.35);
+      }
+      .logo {
+        font-weight: 800;
+        letter-spacing: 0.6px;
+        font-size: 17px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .logo::before {
+        content: '';
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #6dd5fa, #2980b9);
+        box-shadow: 0 0 12px rgba(109, 213, 250, 0.75);
+      }
+      button.close-btn {
+        background: rgba(255, 255, 255, 0.04);
+        color: #e7eaf0;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 8px 12px;
+        cursor: pointer;
+        transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+      }
+      button.close-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.16);
+        transform: translateY(-1px);
+      }
+      nav {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      nav button {
+        text-align: left;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        color: #dfe6f5;
+        padding: 11px 12px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background 140ms ease, border-color 140ms ease, color 140ms ease, transform 140ms ease;
+      }
+      nav button:hover,
+      nav button.active {
+        background: linear-gradient(135deg, rgba(79, 209, 197, 0.22), rgba(109, 213, 250, 0.12));
+        border-color: rgba(109, 213, 250, 0.4);
+        color: #f8fbff;
+        transform: translateY(-1px);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+      }
+      main {
+        padding: 28px 32px;
+        overflow: auto;
+        background: linear-gradient(160deg, rgba(20, 24, 34, 0.9), rgba(10, 12, 18, 0.94));
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      }
+      .section {
+        display: none;
+      }
+      .section.visible {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+        gap: 24px;
+        align-items: start;
+        align-content: start;
+        grid-auto-rows: min-content;
+      }
+      
+      @media (max-width: 1100px) {
+        .section.visible {
+          grid-template-columns: 1fr;
+        }
+        
+        main {
+          padding: 20px 16px;
+        }
+        
+        .card {
+          padding: 18px;
+        }
+        
+        .section-header-card {
+          padding: 18px;
+        }
+      }
+      
+      @media (max-width: 768px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        
+        .sidebar {
+          display: none;
+        }
+        
+        main {
+          padding: 16px 12px;
+        }
+        
+        .card {
+          padding: 16px;
+          gap: 14px;
+        }
+        
+        .stat-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      
+      .section > .list,
+      .section > .pill-list,
+      .section > .full-width-section {
+        grid-column: 1 / -1;
+      }
+      
+      .full-width-section {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      
+      .section-header-card {
+        background: linear-gradient(145deg, rgba(25, 30, 42, 0.95), rgba(16, 19, 28, 0.98));
+        border: 1px solid rgba(47, 137, 255, 0.12);
+        border-radius: 16px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(47, 137, 255, 0.05);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .section-header-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(47, 137, 255, 0.03), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+      }
+      
+      .section-header-card:hover::before {
+        opacity: 1;
+      }
+      
+      .section-header-card .title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #e7eaf0;
+        margin-bottom: 6px;
+      }
+      h2 {
+        margin: 0 0 12px;
+      }
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 14px;
+      }
+      .stat {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px;
+        background: linear-gradient(135deg, rgba(47, 137, 255, 0.08), rgba(47, 137, 255, 0.02));
+        border: 1px solid rgba(47, 137, 255, 0.15);
+        border-radius: 12px;
+        transition: all 0.2s ease;
+      }
+      .stat:hover {
+        border-color: rgba(47, 137, 255, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(47, 137, 255, 0.15);
+      }
+      .stat-icon {
+        font-size: 28px;
+        line-height: 1;
+        filter: drop-shadow(0 2px 8px rgba(47, 137, 255, 0.3));
+      }
+      .stat-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .stat .label {
+        font-size: 12px;
+        color: #9aa6bb;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .stat .value {
+        font-size: 22px;
+        font-weight: 700;
+        color: #2f89ff;
+        text-shadow: 0 2px 8px rgba(47, 137, 255, 0.3);
+      }
+      .card {
+        background: linear-gradient(145deg, rgba(25, 30, 42, 0.95), rgba(16, 19, 28, 0.98));
+        border: 1px solid rgba(47, 137, 255, 0.12);
+        border-radius: 16px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(47, 137, 255, 0.05);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        min-width: 0;
+      }
+      
+      .card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(47, 137, 255, 0.03), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+      }
+      
+      .card:hover {
+        border-color: rgba(47, 137, 255, 0.25);
+        box-shadow: 0 14px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(47, 137, 255, 0.15);
+        transform: translateY(-2px);
+      }
+      
+      .card:hover::before {
+        opacity: 1;
+      }
+      
+      .card .text .title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #e7eaf0;
+        margin-bottom: 8px;
+      }
+      
+      .card .text .desc {
+        font-size: 13px;
+        color: #9aa6bb;
+        line-height: 1.6;
+      }
+      
+      .card-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 20px;
+        position: relative;
+        z-index: 1;
+      }
+      
+      .card .text,
+      .card .switch,
+      .card .actions,
+      .card .stat-grid,
+      .section-header-card .text,
+      .section-header-card .actions,
+      .section-header-card .allow-form,
+      .section-header-card .quick-allow {
+        position: relative;
+        z-index: 1;
+      }
+      
+      .card-row {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 14px;
+        align-items: center;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 14px 16px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 4px 12px rgba(0, 0, 0, 0.2);
+        transition: all 0.2s ease;
+      }
+      
+      .card-row:hover {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+        border-color: rgba(47, 137, 255, 0.15);
+        transform: translateX(4px);
+      }
+      .ghost-input {
+        background: linear-gradient(135deg, #0f1318, #13161c);
+        border: 1px solid #2a3340;
+        border-radius: 10px;
+        color: #e7eaf0;
+        padding: 11px 14px;
+        min-width: 160px;
+        transition: all 0.2s ease;
+        font-size: 14px;
+      }
+      .ghost-input:focus {
+        outline: none;
+        border-color: #2f89ff;
+        box-shadow: 0 0 0 3px rgba(47, 137, 255, 0.15);
+        background: linear-gradient(135deg, #13161c, #161a22);
+      }
+      .ghost-input::placeholder {
+        color: #5a6478;
+      }
+      
+      /* Select dropdown seçenekleri için stil */
+      .ghost-input option {
+        background: #13161c;
+        color: #e7eaf0;
+        padding: 8px;
+      }
+      
+      /* Setting item stili */
+      .setting-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      .setting-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #a8b3cf;
+        letter-spacing: 0.3px;
+        display: block;
+      }
+      
+      input:checked + .slider {
+        background-color: #4fd1c5;
+      }
+      input:checked + .slider:before {
+        transform: translateX(22px);
+      }
+      .footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 8px;
+        color: #7f879b;
+        font-size: 12px;
+        padding: 10px 0;
+      }
+      .list {
+        background: linear-gradient(145deg, rgba(15, 17, 24, 0.9), rgba(10, 12, 18, 0.95));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-height: 80px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.3);
+        min-width: 0;
+      }
+      
+      .pill-list {
+        background: linear-gradient(145deg, rgba(15, 17, 24, 0.9), rgba(10, 12, 18, 0.95));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: 16px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        min-height: 80px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.3);
+      }
+
+    .progress {
+      width: 100%;
+      height: 8px;
+      background: #0d1018;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #1f2430;
+    }
+    .progress-inner {
+      height: 100%;
+      background: linear-gradient(90deg, #3a65f7, #6fa3ff);
+      width: 0%;
+      transition: width 0.15s ease;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+    
+    @media (max-width: 600px) {
+      .actions {
+        flex-direction: column;
+      }
+      
+      .actions .ghost-btn {
+        width: 100%;
+      }
+    }
+    .ghost-btn {
+      background: linear-gradient(135deg, #1f2630, #191e28);
+      color: #e7eaf0;
+      border: 1px solid #2a3340;
+      border-radius: 10px;
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      font-size: 13px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    .ghost-btn:hover {
+      background: linear-gradient(135deg, #2a3340, #1f2630);
+      border-color: #36507a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    .ghost-btn:active {
+      transform: translateY(0);
+    }
+    .ghost-btn.danger {
+      background: linear-gradient(135deg, rgba(80, 30, 30, 0.4), rgba(60, 20, 20, 0.5));
+      border-color: rgba(255, 102, 102, 0.3);
+      color: #ffb3b3;
+    }
+    .ghost-btn.danger:hover {
+      background: linear-gradient(135deg, rgba(100, 40, 40, 0.5), rgba(80, 30, 30, 0.6));
+      border-color: rgba(255, 102, 102, 0.5);
+      color: #ffd6d6;
+      box-shadow: 0 4px 12px rgba(255, 102, 102, 0.2);
+    }
+    .actions.wrap {
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 24px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #3a3f4a;
+      transition: 0.2s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.2s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background: linear-gradient(135deg, #2f89ff, #1e6fcc);
+      box-shadow: 0 0 12px rgba(47, 137, 255, 0.4);
+    }
+    input:checked + .slider:before {
+      transform: translateX(22px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    .slider {
+      transition: all 0.3s ease;
+    }
+    .slider:before {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    .footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 8px;
+      color: #788199;
+      font-size: 12px;
+      padding: 10px 0;
+    }
+    .list {
+      background: #111520;
+      border: 1px solid #1b202c;
+      border-radius: 10px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 40px;
+    }
+
+    /* Notes list styling */
+    #notes-settings-list {
+      background: linear-gradient(145deg, rgba(15, 17, 24, 0.9), rgba(10, 12, 18, 0.95));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 80px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    #notes-settings-list .cookie-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(21, 25, 36, 0.9), rgba(16, 19, 28, 0.95));
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    #notes-settings-list .cookie-row::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(93, 151, 255, 0.05), transparent);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+
+    #notes-settings-list .cookie-row:hover {
+      border-color: rgba(93, 151, 255, 0.22);
+      transform: translateX(6px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+    }
+
+    #notes-settings-list .cookie-row:hover::before {
+      opacity: 1;
+    }
+
+    #notes-settings-list .cookie-domain {
+      font-weight: 600;
+      font-size: 14px;
+      color: #e7eaf0;
+      position: relative;
+      z-index: 1;
+    }
+
+    #notes-settings-list .cookie-meta {
+      color: #9aa2b5;
+      font-size: 13px;
+      line-height: 1.5;
+      max-width: 70%;
+      position: relative;
+      z-index: 1;
+      word-wrap: break-word;
+    }
+
+    #notes-settings-list .ghost-btn {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Downloads-specific styling */
+    #section-downloads .card {
+      background: linear-gradient(150deg, rgba(32, 38, 52, 0.72), rgba(15, 18, 27, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    #section-downloads .list {
+      background: rgba(10, 12, 18, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      gap: 12px;
+    }
+
+    /* Permission list styling */
+    #permission-list {
+      background: linear-gradient(145deg, rgba(15, 17, 24, 0.9), rgba(10, 12, 18, 0.95));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 80px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    #permission-list .cookie-row {
+      margin-bottom: 4px;
+    }
+
+    #section-downloads .cookie-row {
+      background: linear-gradient(135deg, rgba(26, 32, 44, 0.92), rgba(18, 22, 33, 0.95));
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      padding: 14px 16px;
+      gap: 14px;
+    }
+
+    #section-downloads .cookie-domain {
+      font-size: 15px;
+      letter-spacing: 0.1px;
+    }
+
+    #section-downloads .cookie-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #c3c9d6;
+      font-size: 12px;
+    }
+
+    #section-downloads .progress {
+      height: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    #section-downloads .progress-inner {
+      background: linear-gradient(90deg, #4fd1c5, #6d8bff);
+    }
+
+    #section-downloads .actions .ghost-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.08);
+      color: #e8ecf5;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+    }
+
+    #section-downloads .actions .ghost-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.14);
+    }
+
+    #section-downloads .actions .ghost-btn.danger {
+      border-color: rgba(255, 102, 102, 0.28);
+      color: #ffb3b3;
+    }
+
+    #section-downloads .actions .ghost-btn.danger:hover {
+      background: rgba(255, 102, 102, 0.08);
+      border-color: rgba(255, 102, 102, 0.36);
+      color: #ffd6d6;
+    }
+    .cookie-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(21, 25, 36, 0.9), rgba(16, 19, 28, 0.95));
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .cookie-row::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(47, 137, 255, 0.05), transparent);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+    
+    .cookie-row:hover {
+      border-color: rgba(47, 137, 255, 0.2);
+      transform: translateX(6px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .cookie-row:hover::before {
+      opacity: 1;
+    }
+    .cookie-domain {
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .cookie-meta {
+      color: #9aa2b5;
+      font-size: 12px;
+    }
+    .empty {
+      color: #7a8599;
+      font-size: 14px;
+      padding: 24px;
+      text-align: center;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+    .allow-form {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .allow-form input {
+      flex: 1;
+      min-width: 250px;
+      background: linear-gradient(135deg, #0f1318, #13161c);
+      border: 1px solid #2a3340;
+      border-radius: 10px;
+      padding: 11px 14px;
+      color: #e7eaf0;
+      transition: all 0.2s ease;
+      font-size: 14px;
+    }
+    .allow-form input:focus {
+      outline: none;
+      border-color: #2f89ff;
+      box-shadow: 0 0 0 3px rgba(47, 137, 255, 0.15);
+      background: linear-gradient(135deg, #13161c, #161a22);
+    }
+    .allow-form input::placeholder {
+      color: #5a6478;
+    }
+    .quick-allow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      width: 100%;
+      align-items: center;
+      padding: 12px;
+      background: rgba(47, 137, 255, 0.03);
+      border-radius: 10px;
+      border: 1px solid rgba(47, 137, 255, 0.08);
+    }
+    .quick-hint {
+      color: #9aa6bb;
+      font-size: 13px;
+      font-weight: 500;
+      flex: 1 1 100%;
+      padding: 8px 0 0;
+    }
+
+    /* Notes: satırların dar alanda sıkışmaması */
+    #notes-settings-list .cookie-row {
+      display: grid;
+      grid-template-columns: minmax(180px, 260px) 1fr;
+      align-items: start;
+      gap: 14px;
+    }
+
+    @media (max-width: 720px) {
+      #notes-settings-list .cookie-row {
+        grid-template-columns: 1fr;
+      }
+
+      #notes-settings-list .cookie-meta {
+        max-width: 100%;
+      }
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, rgba(31, 38, 48, 0.9), rgba(21, 25, 36, 0.95));
+      border: 1px solid rgba(47, 137, 255, 0.15);
+      border-radius: 24px;
+      padding: 8px 14px;
+      font-size: 13px;
+      color: #e7eaf0;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    .pill:hover {
+      border-color: rgba(47, 137, 255, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(47, 137, 255, 0.15);
+    }
+    .pill .badge {
+      font-size: 11px;
+      color: #2f89ff;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: rgba(47, 137, 255, 0.15);
+    }
+    .pill button {
+      background: transparent;
+      border: none;
+      color: #e7eaf0;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 12px;
+      transition: all 0.15s ease;
+    }
+    .pill button:hover {
+      background: rgba(255, 102, 102, 0.2);
+      color: #ffb3b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">Ayarlar</div>
+        <button class="close-btn" id="btn-close">Kapat</button>
+      </div>
+      <nav>
+        <button class="nav-link active" data-target="section-cookies">Çerezler</button>
+        <button class="nav-link" data-target="section-sessions">Oturum & Gizlilik</button>
+        <button class="nav-link" data-target="section-telegram">Telegram</button>
+        <button class="nav-link" data-target="section-ai">Yapay Zeka</button>
+        <button class="nav-link" data-target="section-notes">Notlar</button>
+        <button class="nav-link" data-target="section-permissions">İzinler</button>
+        <button class="nav-link" data-target="section-downloads">İndirilenler</button>
+        <button class="nav-link" data-target="section-notifications">Bildirimler</button>
+        <button class="nav-link" data-target="section-auth">Giriş</button>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <section id="section-cookies" class="section visible">
+        <div class="full-width-section">
+          <div class="section-header-card">
+            <div class="text">
+              <div class="title">🍪 Çerez Durumu</div>
+              <div class="desc">Hangi sitelerde çerez var, boyutu ve manuel temizleme.</div>
+            </div>
+            <div class="actions">
+              <button class="ghost-btn" id="btn-refresh-cookies">🔄 Yenile</button>
+              <button class="ghost-btn danger" id="btn-clear-all">🗑️ Tümünü temizle</button>
+            </div>
+          </div>
+          <div class="list" id="cookie-list" aria-live="polite"></div>
+        </div>
+
+        <div class="full-width-section">
+          <div class="section-header-card">
+            <div class="text">
+              <div class="title">✅ İzin Verilen Siteler</div>
+              <div class="desc">Çerezlere izin verilen alan adları. Listeye manuel ekleyebilirsiniz.</div>
+            </div>
+            <div class="allow-form">
+              <input type="text" id="input-allow-host" placeholder="ornek.com" />
+              <button class="ghost-btn" id="btn-add-allow">➕ Ekle</button>
+            </div>
+            <div class="quick-allow">
+              <button class="ghost-btn" id="btn-allow-left">◀ Sol sekme</button>
+              <button class="ghost-btn" id="btn-allow-right">Sağ sekme ▶</button>
+              <div class="quick-hint" id="quick-hosts"></div>
+            </div>
+          </div>
+          <div class="pill-list" id="allow-list" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section id="section-sessions" class="section">
+        <div class="card">
+          <div class="text">
+            <div class="title">Kalıcı oturum (disk'e yaz)</div>
+            <div class="desc">KAPALI = Gizli mod: Çerezler RAM'de, uygulama kapanınca silinir. AÇIK = Normal mod: Çerezler disk'e yazılır, kalıcı olur.</div>
+          </div>
+          <div class="actions">
+            <label class="switch">
+              <input type="checkbox" id="toggle-persistent-session" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="text">
+            <div class="title">Tüm sitelere çerez izni ver</div>
+            <div class="desc">AÇIK = Tüm siteler çerez kullanabilir. KAPALI = Sadece izin listesindeki siteler (ChatGPT, Telegram vb.) çerez kullanabilir.</div>
+          </div>
+          <div class="actions">
+            <label class="switch">
+              <input type="checkbox" id="toggle-allow-all-cookies" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="text">
+            <div class="title">Storage (localStorage/indexedDB) etkin</div>
+            <div class="desc">Kapalıysa localStorage, sessionStorage, indexedDB erişimi engellenir veya no-op olur.</div>
+          </div>
+          <div class="actions">
+            <label class="switch">
+              <input type="checkbox" id="toggle-storage-enabled" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="text">
+            <div class="title">HTTP cache etkin</div>
+            <div class="desc">Kapalıysa HTTP disk cache'i devre dışı bırakılır (--disable-http-cache).</div>
+          </div>
+          <div class="actions">
+            <label class="switch">
+              <input type="checkbox" id="toggle-cache-enabled" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="text">
+            <div class="title">Üçüncü taraf çerezlerini engelle</div>
+            <div class="desc">Farklı kaynaktan gelen Set-Cookie başlıklarını düşürür.</div>
+          </div>
+          <div class="actions">
+            <label class="switch">
+              <input type="checkbox" id="toggle-thirdparty" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="text">
+            <div class="title">Temel izleme koruması</div>
+            <div class="desc">Yaygın takip alan adlarına üçüncü taraf isteklerini iptal eder.</div>
+          </div>
+          <div class="actions">
+            <label class="switch">
+              <input type="checkbox" id="toggle-tracking" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section id="section-ai" class="section">
+        <div class="card column">
+          <div class="card-header">
+            <div class="text">
+              <div class="title">🤖 Yapay Zeka Oturumları</div>
+              <div class="desc">ChatGPT, Gemini, Copilot ve Grok için kullanılan geçici oturum verilerini yönetin.</div>
+            </div>
+          </div>
+          
+          <div class="stat-grid" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
+            <div class="stat">
+              <div class="stat-icon">💬</div>
+              <div class="stat-info">
+                <div class="label">ChatGPT</div>
+                <div class="value" style="font-size: 11px;">temp:ai-chatgpt</div>
+              </div>
+            </div>
+            <div class="stat">
+              <div class="stat-icon">✨</div>
+              <div class="stat-info">
+                <div class="label">Gemini</div>
+                <div class="value" style="font-size: 11px;">temp:ai-gemini</div>
+              </div>
+            </div>
+            <div class="stat">
+              <div class="stat-icon">🔷</div>
+              <div class="stat-info">
+                <div class="label">Copilot</div>
+                <div class="value" style="font-size: 11px;">temp:ai-copilot</div>
+              </div>
+            </div>
+            <div class="stat">
+              <div class="stat-icon">🌟</div>
+              <div class="stat-info">
+                <div class="label">Grok</div>
+                <div class="value" style="font-size: 11px;">temp:ai-grok</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="actions" style="flex-direction: column; gap: 16px; margin-top: 20px;">
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+              <button class="ghost-btn danger" id="btn-ai-reset-sessions" style="flex: 1; min-width: 200px;">
+                🗑️ AI oturumlarını sıfırla
+              </button>
+              <button class="ghost-btn" id="btn-ai-clear-cookies" style="flex: 1; min-width: 200px;">
+                🍪 AI çerezlerini temizle
+              </button>
+            </div>
+            <div class="quick-hint" id="ai-action-status" style="background: rgba(47, 137, 255, 0.08); padding: 12px; border-radius: 8px; border-left: 3px solid #2f89ff;">
+              ⚠️ Bu işlemler, AI servislerinde oturumdan çıkışa neden olabilir.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="text">
+            <div class="title">📝 Oturum Sıfırlama Hakkında</div>
+            <div class="desc">
+              "AI oturumlarını sıfırla" işlemi tüm AI partition'larında çerezler, localStorage, cache, indexedDB, service worker gibi tüm verileri temizler ve AI view'larını yeniden yükler. Bu işlem geri alınamaz.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="text">
+            <div class="title">🍪 Çerez Temizleme Hakkında</div>
+            <div class="desc">
+              "AI çerezlerini temizle" işlemi sadece çerezleri temizler; localStorage ve diğer veriler korunur. Daha hafif bir temizlik seçeneğidir.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="section-notes" class="section">
+        <div class="card">
+          <div class="text">
+            <div class="title">Notlar Yönetimi</div>
+            <div class="desc">Mevcut notları görüntüle, JSON olarak indir veya JSON dosyasından yükle.</div>
+          </div>
+          <div class="actions">
+            <button class="ghost-btn" id="btn-notes-import">JSON yükle</button>
+            <button class="ghost-btn" id="btn-notes-export">JSON indir</button>
+            <input type="file" id="input-notes-file" accept="application/json" hidden />
+          </div>
+        </div>
+        
+        <div class="full-width-section">
+          <div class="list" id="notes-settings-list" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section id="section-permissions" class="section">
+        <div class="card">
+          <div class="text">
+            <div class="title">Site İzinleri</div>
+            <div class="desc">Kamera, mikrofon, konum ve bildirim izinlerini host bazında yönet.</div>
+          </div>
+          <div class="actions">
+            <input type="text" id="permission-host" placeholder="ornek.com" class="ghost-input" />
+            <select id="permission-kind" class="ghost-input">
+              <option value="camera">Kamera</option>
+              <option value="microphone">Mikrofon</option>
+              <option value="geolocation">Konum</option>
+              <option value="notifications">Bildirim</option>
+              <option value="popups">Pop-up pencereler</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="text">
+            <div class="title">İzin İşlemleri</div>
+            <div class="desc">Seçili site için izin ver veya engelle.</div>
+          </div>
+          <div class="actions">
+            <button class="ghost-btn" id="btn-permission-allow">İzin ver</button>
+            <button class="ghost-btn" id="btn-permission-deny">Engelle</button>
+          </div>
+        </div>
+        
+        <div class="full-width-section">
+          <div class="list" id="permission-list" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section id="section-telegram" class="section">
+        <div class="card">
+          <div class="text">
+            <div class="title">🔐 Telegram Oturumu</div>
+            <div class="desc">Telegram panelini etkinleştirin veya devre dışı bırakın. <strong>Önemli:</strong> "Kalıcı oturum" ayarı kapalıysa (temp:telegram), veriler sadece RAM'de tutulur ve uygulama kapanınca silinir. Kalıcı oturum açıksa (persist:telegram), veriler diske yazılır ve korunur.</div>
+          </div>
+          <div class="actions">
+            <label class="switch">
+              <input type="checkbox" id="toggle-telegram-session" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="card column">
+          <div class="card-header">
+            <div class="text">
+              <div class="title">📊 Oturum Bilgileri</div>
+              <div class="desc">Telegram oturumunuza ait çerez ve depolama istatistikleri.</div>
+            </div>
+            <button class="ghost-btn" id="refresh-telegram-info">🔄 Yenile</button>
+          </div>
+          <div class="stat-grid">
+            <div class="stat">
+              <div class="stat-icon">🍪</div>
+              <div class="stat-info">
+                <div class="label">Çerez sayısı</div>
+                <div class="value" id="telegram-cookie-count">-</div>
+              </div>
+            </div>
+            <div class="stat">
+              <div class="stat-icon">💾</div>
+              <div class="stat-info">
+                <div class="label">Depolama boyutu</div>
+                <div class="value" id="telegram-storage-size">-</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="text">
+            <div class="title">🗑️ Oturumu Sıfırla</div>
+            <div class="desc">Telegram oturumunuzu tamamen temizler. Tüm çerezler ve depolama verileri silinir.</div>
+          </div>
+          <div class="actions">
+            <button class="ghost-btn danger" id="clear-telegram-session">Oturumu Sıfırla</button>
+          </div>
+        </div>
+
+        <div class="full-width-section">
+          <div class="section-header-card">
+            <div class="text">
+              <div class="title">📦 Depolama İçeriği</div>
+              <div class="desc">Telegram oturumunuza ait kaydedilen veriler (localStorage, sessionStorage).</div>
+            </div>
+            <div class="actions">
+              <button class="ghost-btn" id="btn-telegram-storage-refresh">🔄 Yenile</button>
+            </div>
+          </div>
+          <div class="list" id="telegram-storage-list" aria-live="polite">
+            <div class="empty">Veriler yükleniyor...</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="section-downloads" class="section">
+        <div class="card">
+          <div class="text">
+            <div class="title">İndirilenler</div>
+            <div class="desc">Son indirilen dosyalar listelenir ve yönetilir.</div>
+          </div>
+        </div>
+        
+        <div class="full-width-section">
+          <div class="list" id="download-list" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section id="section-auth" class="section">
+        <div class="card">
+          <div class="text">
+            <div class="title">Admin hesabı</div>
+            <div class="desc">Bu tarayıcıda diske kaydedilen tek veri giriş bilgileridir.</div>
+          </div>
+          <div class="actions">
+            <input type="text" id="auth-admin-username" placeholder="admin kullanıcı adı" class="ghost-input" />
+            <input type="password" id="auth-admin-password" placeholder="admin şifre" class="ghost-input" />
+          </div>
+        </div>
+
+
+        <div class="card">
+          <div class="text">
+            <div class="title">User Mode Site</div>
+            <div class="desc">User giriş yaptığında açılacak site adresi (tam URL).</div>
+          </div>
+          <div class="actions">
+            <input type="text" id="auth-usermode-site" placeholder="https://lobby.ogame.gameforge.com/tr_TR/" class="ghost-input" style="flex: 1;" />
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="text">
+            <div class="title">Kaydet</div>
+            <div class="desc">Yeni bilgiler bir sonraki girişte geçerli olur.</div>
+          </div>
+          <div class="actions">
+            <button class="ghost-btn" id="btn-auth-save">💾 Kaydet</button>
+            <div class="quick-hint" id="auth-save-status"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bildirimler Sekmesi -->
+      <section id="section-notifications" class="section">
+      
+
+        <!-- Ayarlar Grid -->
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 32px;">
+          <!-- Görünüm Ayarları -->
+          <div style="background: linear-gradient(135deg, #1a1f2e 0%, #13161f 100%); border: 2px solid #2a3340; border-radius: 16px; padding: 24px;">
+            <h3 style="font-size: 16px; font-weight: 600; color: #a8b3cf; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 1px;">
+              <span>🎨</span> Görünüm ve Tema
+            </h3>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div class="setting-item">
+              <label class="setting-label">Bildirim Teması</label>
+              <select id="notification-theme" class="ghost-input">
+                <option value="modern">Modern (Beyaz Gradient)</option>
+                <option value="dark">Karanlık (Dark Cyan)</option>
+                <option value="minimal">Minimal (Temiz Beyaz)</option>
+                <option value="glass">Cam Efekti (Glassmorphism)</option>
+                <option value="neon">Neon (Magenta/Cyan)</option>
+                <option value="windows">Windows 11 (Standart)</option>
+                <option value="telegram">Telegram (Mavi Tema)</option>
+                <option value="chrome">Chrome (Material Design)</option>
+                <option value="edge">Microsoft Edge (Fluent)</option>
+                <option value="firefox">Firefox (Photon)</option>
+              </select>
+            </div>
+            
+            <div class="setting-item">
+              <label class="setting-label">Bildirim Pozisyonu</label>
+              <select id="notification-position" class="ghost-input">
+                <option value="top-right">Sağ Üst</option>
+                <option value="top-left">Sol Üst</option>
+                <option value="bottom-right">Sağ Alt</option>
+                <option value="bottom-left">Sol Alt</option>
+              </select>
+            </div>
+
+            <div class="setting-item">
+              <label class="setting-label">Ekran Seçimi</label>
+              <select id="notification-display" class="ghost-input">
+                <option value="0">Birincil Ekran</option>
+              </select>
+            </div>
+          </div>
+          </div>
+
+          <!-- Animasyon Ayarları -->
+          <div style="background: linear-gradient(135deg, #1a1f2e 0%, #13161f 100%); border: 2px solid #2a3340; border-radius: 16px; padding: 24px;">
+            <h3 style="font-size: 16px; font-weight: 600; color: #a8b3cf; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 1px;">
+              <span>✨</span> Animasyon ve Efektler
+            </h3>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div class="setting-item">
+              <label class="setting-label">Animasyon Tipi</label>
+              <select id="notification-animation-type" class="ghost-input">
+                <option value="slide">Kaydırma (Slide)</option>
+                <option value="fade">Belirme (Fade)</option>
+                <option value="bounce">Zıplama (Bounce)</option>
+                <option value="zoom">Büyüme (Zoom)</option>
+                <option value="flip">Dönme (Flip)</option>
+                <option value="slideLeft">Sol'dan Kaydırma</option>
+              </select>
+            </div>
+            
+            <div class="setting-item">
+              <label class="setting-label">Animasyon Hızı</label>
+              <select id="notification-animation-speed" class="ghost-input">
+                <option value="150">150ms (Çok Hızlı)</option>
+                <option value="300">300ms (Hızlı)</option>
+                <option value="500">500ms (Normal)</option>
+                <option value="700">700ms (Yavaş)</option>
+              </select>
+            </div>
+            
+            <div class="setting-item">
+              <label class="setting-label">Dizilme Modu</label>
+              <select id="notification-stack-mode" class="ghost-input">
+                <option value="vertical">📋 Dikey Sıralı</option>
+                <option value="horizontal">↔️ Yatay Sıralı</option>
+                <option value="overlap">📚 Üst Üste Binmiş</option>
+              </select>
+            </div>
+          </div>
+          </div>
+
+          <!-- Davranış Ayarları -->
+          <div style="background: linear-gradient(135deg, #1a1f2e 0%, #13161f 100%); border: 2px solid #2a3340; border-radius: 16px; padding: 24px;">
+            <h3 style="font-size: 16px; font-weight: 600; color: #a8b3cf; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 1px;">
+              <span>⚙️</span> Davranış Ayarları
+            </h3>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div class="setting-item">
+              <label class="setting-label">Bildirim Süresi</label>
+              <select id="notification-duration" class="ghost-input">
+                <option value="3000">3 Saniye</option>
+                <option value="5000">5 Saniye</option>
+                <option value="7000">7 Saniye</option>
+                <option value="10000">10 Saniye</option>
+                <option value="15000">15 Saniye</option>
+              </select>
+            </div>
+            
+            <div class="setting-item">
+              <label class="setting-label">Maksimum Bildirim</label>
+              <select id="notification-max-count" class="ghost-input">
+                <option value="3">3 Bildirim</option>
+                <option value="5">5 Bildirim</option>
+                <option value="7">7 Bildirim</option>
+                <option value="10">10 Bildirim</option>
+              </select>
+            </div>
+            
+            <div class="setting-item">
+              <label class="setting-label">Arası Boşluk</label>
+              <select id="notification-spacing" class="ghost-input">
+                <option value="5">5px (Sıkışık)</option>
+                <option value="10">10px (Normal)</option>
+                <option value="15">15px (Rahat)</option>
+                <option value="20">20px (Geniş)</option>
+                <option value="30">30px (Çok Geniş)</option>
+              </select>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <!-- Test Alanı - Full Width -->
+        <div style="background: linear-gradient(135deg, #1a1f2e 0%, #13161f 100%); border: 2px solid #2a3340; border-radius: 16px; padding: 28px;">
+          <h3 style="font-size: 16px; font-weight: 600; color: #a8b3cf; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 1px;">
+            <span>🧪</span> Test Bildirimleri
+          </h3>
+            <p style="color: #8b92a8; font-size: 14px; margin-bottom: 20px;">
+              Ayarlarınızı test etmek için farklı bildirim türlerini deneyin
+            </p>
+          <p style="color: #8b92a8; font-size: 14px; margin-bottom: 20px;">
+            Ayarlarınızı test etmek için farklı bildirim türlerini deneyin
+          </p>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+            <button class="ghost-btn" id="btn-test-notification-simple" style="flex: 1; min-width: 140px;">📬 Basit</button>
+            <button class="ghost-btn" id="btn-test-notification-success" style="flex: 1; min-width: 140px;">✅ Başarı</button>
+            <button class="ghost-btn" id="btn-test-notification-error" style="flex: 1; min-width: 140px;">❌ Hata</button>
+            <button class="ghost-btn" id="btn-test-notification-info" style="flex: 1; min-width: 140px;">ℹ️ Bilgi</button>
+            <button class="ghost-btn" id="btn-test-notification-multi" style="flex: 1; min-width: 140px;">💬 Çoklu</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer">
+        <span>Değişiklikler anında uygulanır.</span>
+      </div>
+    </main>
+  </div>
+
+  <script src="settings.js"></script>
+</body>
+</html>
