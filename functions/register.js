@@ -6,7 +6,14 @@
  * Kullanıcı verilerini Cloudflare KV (USERS namespace) içinde saklar.
  */
 
-import bcrypt from 'bcryptjs';
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+}
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -97,8 +104,7 @@ export async function onRequestPost(context) {
     }
 
     // Şifreyi hash'le
-    const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(password, saltRounds);
+    const passwordHash = await hashPassword(password);
 
     // Lisans bitiş tarihini hesapla
     const now = new Date();

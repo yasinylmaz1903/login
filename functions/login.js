@@ -6,7 +6,14 @@
  * Kullanıcı verileri Cloudflare KV (USERS namespace) içinde saklanır.
  */
 
-import bcrypt from 'bcryptjs';
+async function verifyPassword(password, hash) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex === hash;
+}
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -89,8 +96,8 @@ export async function onRequestPost(context) {
 
     const { passwordHash, licenseExpiryDate } = userData;
 
-    // Şifreyi bcrypt ile doğrula
-    const isPasswordValid = await bcrypt.compare(password, passwordHash);
+    // Şifreyi Web Crypto API ile doğrula
+    const isPasswordValid = await verifyPassword(password, passwordHash);
 
     if (!isPasswordValid) {
       return new Response(
