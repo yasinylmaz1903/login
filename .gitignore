@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+functions/node_modules/
+
+# Build outputs
+dist/
+build/
+out/
+*.exe
+*.app
+*.dmg
+*.deb
+*.rpm
+
+# Electron build
+release/
+app/dist/
+
+# Environment variables
+.env
+.env.local
+.env*.local
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Test files with secrets
+functions/test-api.js
+
+# Temporary files
+*.tmp
+temp/
+tmp/
+
+# User data (if you don't want to commit)
+# userData/
+
+# Wrangler
+.wrangler/

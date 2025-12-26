@@ -1,0 +1,16 @@
+{
+  "name": "ogame-cloudflare-functions",
+  "version": "1.0.0",
+  "description": "Cloudflare Pages Functions for OGame Electron App Authentication",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler pages dev functions --kv USERS --binding USERS",
+    "deploy": "wrangler pages deploy"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
